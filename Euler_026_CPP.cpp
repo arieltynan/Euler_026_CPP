@@ -4,83 +4,71 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <string>
+#include <iterator>
 
 using namespace std;
 
-vector<int> primes(int n)
-{
-    vector<int> primes;
-    primes.push_back(2);
-    for (int i = 3; i < n; i++)
-    {
-        bool prime = true;
-        for (int j = 0; j < primes.size() && primes[j] * primes[j] <= i; j++)
-        {
-            if (i % primes[j] == 0)
-            {
-                prime = false;
-                break;
-            }
-        }
-        if (prime)
-        {
-            primes.push_back(i);
-            //cout << i << " ";
-        }
-    }
-    return primes;
-}
-
-vector<int> fibbonaci(int n)
-{
-    vector<int> fib;
-    fib.push_back(1);
-    fib.push_back(1);
-
-    for (int i = 2; i < n; i++)
-        fib.push_back(fib[i - 1] + fib[i - 2]);
-    return fib;
-}
- 
 int main()
 {
-    int arr[1000];
+    long long int x = 1;
     int n = 1000;
-    long double curr;
-    int fibn = 16;
+    int count = 0;
 
-    //prime number genrator
-    vector<int> primeList = primes(n);
-    vector<int> fibList = fibbonaci(fibn);
+    
+    vector<string> strings; // initial vector of 1/n from n = 1-1000 converted to strings
+    vector<string> sCheck; // first sieve finding looping decimals 
+    vector<string> sCheck2; // second sieve narrowing potential solutions
+        // doing second sieve even though answer was found by looking through sCheck
 
-    for (int i = 0; i < primeList.size(); i++)
+    for (int i = 1; i < n - 1; i++)
     {
-        //cout << primeList[i] << " ";
-        curr = 1 /(primeList[i]*1.0);
-        //cout << fixed << setprecision(16) << primeList[i] << ": " << curr << endl;
+        strings.push_back(to_string(10000000000000000000 * x / i)); // decimals multiplied to long long int form, and into string
     }
 
-    for (int i = 1; i < 32; i++)
+    cout << "First check potential solutions: " << endl;
+    for (string a : strings) // iterating through vector of all decimals 1-1000
     {
-        //cout << primeList[i] << " ";
-        curr = 1 / (pow(i,2) * 1.0);
-        //cout << fixed << setprecision(16) << i*i << ": " << curr << endl;
-    }
+        int matches = 0;
+        count++;
+        for (int j = 0; j < 1; j++)
+        {
+            if (a[j] == a[j + 17]) //checks each digit with digit 10 places after
+            {
+                matches++;
+            }
+        }
 
-    for (int i = 1; i < 10; i++)
+        if (matches == 1) //checks for at least 7 consecutive recurring digits at 10 digits apart
+        {
+            sCheck.push_back(a);
+            cout << count << ":  " << a << endl;
+        }
+    }
+    cout << endl;
+
+    cout << "Second check potential solutions: " << endl;
+    for (string b : sCheck) //checking for loops divisible by 10: 1,2,5
     {
-        //cout << primeList[i] << " ";
-        curr = 1 / (pow(2, i) * 1.0 + 1);
-        //cout << fixed << setprecision(16) << pow(2,i) << ": " << curr << endl;
-    }
+        int matches1 = 0, matches2 = 0, matches4 = 0, matches8 = 0;
+        for (int j = 0; j < 10; j++)
+        {
+            if ((b[j] == b[j + 1]))
+                matches1++;
 
-    for (int i = 0; i < fibn; i++)
-    {
-        curr = 1 / (fibList[i] * 1.0 + 1);
-        cout << fixed << setprecision(16) << fibList[i] << ": " << curr << endl;
-    }
+            if ((b[j] == b[j + 2]))
+                matches2++;
 
-    //n = 289;
-    //cout << fixed << setprecision(16) << n << ": " << 1/(n*1.0) << endl;
+            if ((b[j] == b[j + 4]))
+                matches4++;
 
+            if ((b[j] == b[j + 8]))
+                matches8++;
+        }
+        if (matches1 < 10 && matches2 < 7 && matches4 < 5 && matches8 < 5) //checks for at least 7 consecutive recurring digits at 10 digits apart
+        {
+            sCheck2.push_back(b);
+            cout << b << endl;
+        }
+    } 
 }
