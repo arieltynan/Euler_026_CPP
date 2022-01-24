@@ -1,74 +1,63 @@
 // Euler_026_CPP.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+// Solved 24 January 2022
+
+// Attempt Three with number theory:
+// Take a number in denominator, n
+// Remove all factors of 2 and 5
+// Find shortest number of "9"s that is divisible by result
+// Number of 9s is equal to length of repeating decimal
 
 #include <iostream>
-#include <iomanip>
-#include <vector>
 #include <string>
-#include <iterator>
 
 using namespace std;
 
+// Function to find modulus of long numbers in string form
+int modLong(string num, int mod)
+{
+    int rem = 0; // remainder
+    for (int i = 0; i < num.length(); i++)
+        rem = (rem * 10 + (int)num[i] - '0') % mod;
+
+    return rem;
+}
+
 int main()
 {
-    long long int x = 1;
-    int n = 1000;
-    int count = 0;
-
-    
-    vector<string> strings; // initial vector of 1/n from n = 1-1000 converted to strings
-    vector<string> sCheck; // first sieve finding looping decimals 
-    vector<string> sCheck2; // second sieve narrowing potential solutions
-        // doing second sieve even though answer was found by looking through sCheck
-
-    for (int i = 1; i < n - 1; i++)
+    int ans = 0; // Denom that causes max repeating dec
+    int maxRep = 0; //max number of 9s (repeating decimals)
+    for (int i = 1; i < 1001; i++)
     {
-        strings.push_back(to_string(10000000000000000000 * x / i)); // decimals multiplied to long long int form, and into string
-    }
+        int check = 0; // checks if solution found for i
+        int count = 0; // checks how many 9s taken to divide i
 
-    cout << "First check potential solutions: " << endl;
-    for (string a : strings) // iterating through vector of all decimals 1-1000
-    {
-        int matches = 0;
-        count++;
-        for (int j = 0; j < 1; j++)
+        if (i % 2 != 0 && i % 5 != 0) // denom will not be divisible by 2 or 5
         {
-            if (a[j] == a[j + 17]) //checks each digit with digit 10 places after
+            //long long int nines = 0;
+            string nines;
+            string nine = "9";
+            while (check == 0)
             {
-                matches++;
-            }
-        }
+                nines = nines + nine; //adding a 9 for each loop
+                count++; 
+               
+                if (modLong(nines,i) == 0)
+                {
+                    if (count > maxRep)
+                    {
+                        maxRep = count;
+                        ans = i;
+                    }     
 
-        if (matches == 1) //checks for at least 7 consecutive recurring digits at 10 digits apart
-        {
-            sCheck.push_back(a);
-            cout << count << ":  " << a << endl;
-        }
-    }
-    cout << endl;
+                    check = 1; // ends loop of modulus
+                }
+            } // end while checking for mod
+        } // end of if, each number i not div by 2 or 5
+    } // end of for loop, for each number i 
 
-    cout << "Second check potential solutions: " << endl;
-    for (string b : sCheck) //checking for loops divisible by 10: 1,2,5
-    {
-        int matches1 = 0, matches2 = 0, matches4 = 0, matches8 = 0;
-        for (int j = 0; j < 10; j++)
-        {
-            if ((b[j] == b[j + 1]))
-                matches1++;
+    cout << ans << ": " << maxRep << endl;
 
-            if ((b[j] == b[j + 2]))
-                matches2++;
 
-            if ((b[j] == b[j + 4]))
-                matches4++;
 
-            if ((b[j] == b[j + 8]))
-                matches8++;
-        }
-        if (matches1 < 10 && matches2 < 7 && matches4 < 5 && matches8 < 5) //checks for at least 7 consecutive recurring digits at 10 digits apart
-        {
-            sCheck2.push_back(b);
-            cout << b << endl;
-        }
-    } 
+
 }
